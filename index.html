@@ -1,314 +1,206 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Customer support aptitude assessment for applicants.">
-  <title>Customer Support Assessment</title>
-  <style>
-    :root {
-      --ink: #365366;
-      --cyan: #00B5E2;
-      --mint: #3CDBC0;
-      --paper: #fff;
-      --page: #f2f8fa;
-      --line: #d4e3e9;
-      --muted: #607786;
-      --focus: #e5a900;
-      --danger: #a83d3d;
-      --shadow: 0 16px 46px rgba(54, 83, 102, .09);
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; background: var(--page); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
-    button, input, textarea, select { font: inherit; }
-    button { cursor: pointer; }
-    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
-    .topline { height: 8px; background: linear-gradient(90deg, var(--cyan), var(--mint)); }
-    .shell { width: min(100% - 32px, 1020px); margin: 32px auto 72px; }
-    .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); font-size: .87rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-    .brand-mark { display: grid; width: 28px; height: 28px; place-items: center; border-radius: 9px; background: var(--cyan); color: white; }
-    h1 { margin: 14px 0 8px; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.08; letter-spacing: -.03em; }
-    h2 { margin: 0 0 14px; font-size: clamp(1.35rem, 3vw, 1.85rem); line-height: 1.22; }
-    h3 { margin: 22px 0 9px; font-size: 1.05rem; }
-    p { margin: 0 0 14px; }
-    .muted { color: var(--muted); }
-    .card { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow); }
-    .welcome { margin-top: 28px; padding: clamp(22px, 5vw, 44px); }
-    .welcome-copy { max-width: 70ch; }
-    .chips { display: flex; flex-wrap: wrap; gap: 9px; margin: 22px 0; }
-    .chip { padding: 6px 12px; border: 1px solid #cce9ed; border-radius: 99px; background: #eefafb; color: var(--ink); font-size: .9rem; font-weight: 700; }
-    .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 24px 0 18px; }
-    .field label { display: block; margin-bottom: 7px; font-weight: 750; }
-    .field input, textarea, .answer-input, .jumble-input { width: 100%; border: 1px solid #afc5cf; border-radius: 10px; background: white; color: var(--ink); padding: 12px 14px; }
-    .field input { min-height: 48px; }
-    textarea { min-height: 170px; resize: vertical; }
-    textarea::placeholder, input::placeholder { color: #7a909c; }
-    .notice { margin: 20px 0; padding: 14px 16px; border-left: 4px solid var(--cyan); border-radius: 8px; background: #eff9fc; color: var(--muted); }
-    .btn { min-height: 46px; padding: 10px 18px; border: 0; border-radius: 11px; font-weight: 800; transition: transform .15s ease, filter .15s ease, background .15s ease; }
-    .btn:hover { transform: translateY(-1px); filter: brightness(.98); }
-    .btn-primary { background: var(--ink); color: white; }
-    .btn-accent { background: var(--cyan); color: #073c4b; }
-    .btn-light { border: 1px solid var(--line); background: white; color: var(--ink); }
-    .btn:disabled { cursor: not-allowed; opacity: .5; transform: none; }
-    .assessment { display: none; margin-top: 26px; }
-    .assessment.active { display: block; }
-    .assessment-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; }
-    .candidate-name { font-weight: 750; }
-    .timer { padding: 6px 11px; border-radius: 99px; background: white; border: 1px solid var(--line); font-variant-numeric: tabular-nums; font-weight: 800; }
-    .timer.low { color: var(--danger); border-color: #efc4c4; background: #fff7f7; }
-    .track { height: 10px; overflow: hidden; border-radius: 99px; background: #dfecef; }
-    .fill { width: 0; height: 100%; background: linear-gradient(90deg, var(--cyan), var(--mint)); transition: width .25s ease; }
-    .question-card { min-height: 430px; margin-top: 18px; padding: clamp(22px, 5vw, 42px); }
-    .question-kicker { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 18px; }
-    .section-tag { display: inline-block; padding: 5px 11px; border-radius: 99px; background: #eaf6f8; color: var(--ink); font-size: .87rem; font-weight: 800; }
-    .q-number { color: var(--muted); font-weight: 750; }
-    .prompt { max-width: 78ch; margin: 16px 0 24px; font-size: 1.08rem; }
-    .small-note { color: var(--muted); font-size: .91rem; }
-    .response-label { display: block; margin: 10px 0 8px; font-weight: 800; }
-    .action-list { display: grid; gap: 10px; margin: 18px 0; padding: 0; list-style: none; }
-    .action-list label { display: flex; align-items: flex-start; gap: 11px; padding: 13px 14px; border: 1px solid var(--line); border-radius: 11px; background: #fff; cursor: pointer; }
-    .action-list label:has(input:checked) { border-color: var(--cyan); background: #f0fbfd; }
-    .action-list input { margin-top: 5px; accent-color: var(--ink); }
-    .transcript-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 18px 0; padding: 14px; border-radius: 12px; background: #f1f8f8; }
-    .chart-table, .data-table { width: 100%; margin: 18px 0; border-collapse: collapse; }
-    .chart-table th, .chart-table td, .data-table th, .data-table td { border: 1px solid var(--line); padding: 10px 12px; text-align: left; }
-    .chart-table th, .data-table th { background: #edf7f8; }
-    .bar { display: inline-block; height: 14px; min-width: 5px; margin-right: 8px; border-radius: 99px; background: var(--cyan); vertical-align: middle; }
-    .choice-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
-    .choice-row select { min-height: 44px; min-width: 220px; border: 1px solid #afc5cf; border-radius: 9px; padding: 8px 12px; color: var(--ink); background: white; }
-    .rank-list { display: grid; gap: 10px; margin: 18px 0; padding: 0; list-style: none; }
-    .rank-item { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 11px; background: white; }
-    .rank-item .rank-copy { flex: 1; }
-    .rank-tools { display: flex; gap: 5px; }
-    .rank-tools button { width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 8px; background: white; color: var(--ink); font-weight: 900; }
-    .jumble-list { display: grid; gap: 14px; margin: 20px 0; }
-    .jumble-item { display: grid; grid-template-columns: minmax(125px, .7fr) minmax(180px, 1fr); align-items: center; gap: 14px; }
-    .scrambled { display: inline-flex; justify-content: center; min-width: 115px; padding: 8px 12px; border-radius: 10px; background: #e9faf6; color: var(--ink); font-weight: 900; letter-spacing: .15em; }
-    .crossword-wrap { overflow-x: auto; padding: 5px 0 12px; }
-    .crossword { display: grid; grid-template-columns: repeat(5, 44px); grid-auto-rows: 44px; gap: 3px; width: max-content; margin: 14px 0 18px; }
-    .crossword .black { background: var(--ink); border-radius: 3px; }
-    .crossword .white { width: 44px; height: 44px; padding: 0; text-align: center; text-transform: uppercase; font-weight: 850; border: 1px solid #8da9b6; border-radius: 3px; }
-    .clues { display: grid; gap: 8px; max-width: 62ch; }
-    .clues p { margin: 0; }
-    .nav { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 18px; }
-    .nav-actions { display: flex; gap: 9px; }
-    .completion { display: none; margin-top: 26px; padding: clamp(22px, 5vw, 42px); }
-    .completion.active { display: block; }
-    .foot { margin-top: 24px; color: var(--muted); font-size: .88rem; }
-    .validation-error { min-height: 1.5em; margin: 8px 0; color: var(--danger); font-weight: 750; }
-    .print-report { display: none; }
-    [data-protected] { -webkit-user-select: none; user-select: none; }
-    @media print {
-      body { background: #fff; color: #172b4d; }
-      .topline, .shell { display: none !important; }
-      #printReport { display: block !important; margin: 0; padding: 0; color: #172b4d; font: 11pt/1.45 Arial, sans-serif; }
-      .print-report h1 { margin: 0 0 8px; font-size: 22pt; }
-      .print-report h2 { margin: 20px 0 5px; font-size: 13pt; }
-      .print-question { break-inside: avoid; margin: 0 0 14px; }
-      .print-answer { white-space: pre-wrap; overflow-wrap: anywhere; }
-      .print-meta { margin-bottom: 18px; }
-    }
-    @media (max-width: 650px) {
-      .shell { width: min(100% - 22px, 1020px); margin-top: 22px; }
-      .field-grid { grid-template-columns: 1fr; }
-      .question-card { min-height: 0; }
-      .jumble-item { grid-template-columns: 1fr; gap: 7px; }
-      .nav { align-items: stretch; }
-      .nav-actions { width: 100%; }
-      .nav-actions .btn { flex: 1; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Aptitude Assessment - CS: customer support applicant assessment.">
+<title>Aptitude Assessment - CS</title>
+<style>
+:root{--ink:#365366;--cyan:#00B5E2;--mint:#3CDBC0;--page:#f2f8fa;--line:#d4e3e9;--muted:#607786;--focus:#e5a900;--danger:#a83d3d;--shadow:0 16px 46px rgba(54,83,102,.09)}
+*{box-sizing:border-box}body{margin:0;background:var(--page);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}button,input,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--focus);outline-offset:3px}.topline{height:8px;background:linear-gradient(90deg,var(--cyan),var(--mint))}.shell{width:min(100% - 32px,1020px);margin:28px auto 70px}.brand{display:flex;align-items:center;gap:10px;font-size:.86rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.brand-mark{display:grid;width:30px;height:30px;place-items:center;border-radius:9px;background:var(--cyan);color:white}h1{margin:14px 0 8px;font-size:clamp(2rem,4vw,3rem);line-height:1.08;letter-spacing:-.03em}h2{margin:0 0 14px;font-size:clamp(1.35rem,3vw,1.85rem);line-height:1.22}h3{margin:18px 0 8px}.muted,.small-note{color:var(--muted)}.small-note{font-size:.91rem}.card{background:white;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}.welcome,.completion{margin-top:26px;padding:clamp(22px,5vw,42px)}.chips{display:flex;flex-wrap:wrap;gap:9px;margin:20px 0}.chip,.tag{padding:6px 12px;border:1px solid #cce9ed;border-radius:99px;background:#eefafb;font-weight:750}.field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:22px 0 16px}.field label,.response-label{display:block;margin:0 0 7px;font-weight:800}.field input,textarea,.answer-input,.jumble-input{width:100%;border:1px solid #afc5cf;border-radius:10px;background:white;color:var(--ink);padding:12px 14px}.field input{min-height:48px}textarea{min-height:100px;resize:vertical}.notice{margin:18px 0;padding:14px 16px;border-left:4px solid var(--cyan);border-radius:8px;background:#eff9fc;color:var(--muted)}.btn{min-height:46px;padding:10px 18px;border:0;border-radius:11px;font-weight:800;transition:transform .15s ease}.btn:hover{transform:translateY(-1px)}.btn-primary{background:var(--ink);color:white}.btn-accent{background:var(--cyan);color:#073c4b}.btn-light{border:1px solid var(--line);background:white;color:var(--ink)}.btn:disabled{cursor:not-allowed;opacity:.5;transform:none}.assessment{display:none;margin-top:24px}.assessment.active{display:block}.assessment-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:11px}.candidate-name{font-weight:800}.timer{padding:6px 11px;border:1px solid var(--line);border-radius:99px;background:white;font-variant-numeric:tabular-nums;font-weight:800}.timer.low{color:var(--danger);border-color:#efc4c4;background:#fff7f7}.track,.audio-track{height:10px;overflow:hidden;border-radius:99px;background:#dfecef}.fill,.audio-fill{width:0;height:100%;background:linear-gradient(90deg,var(--cyan),var(--mint));transition:width .25s ease}.question-card{min-height:390px;margin-top:18px;padding:clamp(22px,5vw,40px)}.question-kicker{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:16px}.tag{display:inline-block;padding:5px 11px;background:#eaf6f8;font-size:.87rem}.q-number{color:var(--muted);font-weight:750}.prompt{max-width:78ch;margin:16px 0 22px;font-size:1.08rem}.action-list{display:grid;gap:10px;margin:18px 0;padding:0;list-style:none}.action-list label{display:flex;align-items:flex-start;gap:11px;padding:13px 14px;border:1px solid var(--line);border-radius:11px;background:white;cursor:pointer}.action-list label:has(input:checked){border-color:var(--cyan);background:#f0fbfd}.action-list input{margin-top:5px;accent-color:var(--ink)}.audio-card{margin:18px 0;padding:16px;border:1px solid var(--line);border-radius:14px;background:#f5fafb}.audio-controls{display:flex;flex-wrap:wrap;align-items:center;gap:9px}.audio-track{height:8px;margin-top:14px}.audio-status{min-height:1.4em;margin-top:8px;color:var(--muted);font-size:.9rem}.word-count{text-align:right;margin-top:5px;color:var(--muted);font-size:.88rem}.table-wrap{overflow-x:auto}.data-table{width:100%;margin:16px 0;border-collapse:collapse}.data-table th,.data-table td{border:1px solid var(--line);padding:10px 12px;text-align:left}.data-table th{background:#edf7f8}.crossword-wrap{overflow:auto;padding:7px 0 14px}.crossword{display:grid;grid-template-columns:repeat(5,58px);grid-auto-rows:58px;gap:4px;width:max-content;margin:14px 0 18px}.crossword .black{background:var(--ink);border-radius:4px}.crossword .white{width:58px;height:58px;padding:0;text-align:center;text-transform:uppercase;font-size:1.5rem;font-weight:850;border:2px solid #8da9b6;border-radius:5px}.clues{display:grid;gap:8px;max-width:70ch}.clues p{margin:0}.jumble-box{margin-top:18px;padding:16px;border-radius:12px;background:#effaf7}.scrambled{display:inline-flex;margin-right:12px;padding:6px 10px;border-radius:9px;background:white;font-weight:900;letter-spacing:.16em}.rank-list{display:grid;gap:10px;margin:18px 0;padding:0;list-style:none}.rank-item{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:11px;background:white}.rank-copy{flex:1}.rank-tools{display:flex;gap:5px}.rank-tools button{width:38px;height:38px;border:1px solid var(--line);border-radius:8px;background:white;color:var(--ink);font-weight:900}.nav{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-top:17px}.nav-actions{display:flex;gap:9px}.validation-error{min-height:1.5em;margin:8px 0;color:var(--danger);font-weight:750}.foot{margin-top:24px;color:var(--muted);font-size:.88rem}.print-report{display:none}[data-protected]{-webkit-user-select:none;user-select:none}.focus-shield{display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;padding:24px;background:rgba(12,32,45,.97);color:white;text-align:center}.focus-shield.active{display:flex}.focus-shield-card{max-width:440px;padding:30px;border:1px solid rgba(255,255,255,.3);border-radius:18px;background:#203c4e}.focus-shield h2{margin-bottom:8px}
+@media print{body{background:white;color:#172b4d}.topline,.shell,.focus-shield{display:none!important}#printReport{display:block!important;margin:0;padding:0;color:#172b4d;font:11pt/1.45 Arial,sans-serif}.print-report h1{margin:0 0 8px;font-size:22pt}.print-report h2{margin:18px 0 5px;font-size:13pt}.print-question{break-inside:avoid;margin-bottom:14px}.print-answer{white-space:pre-wrap;overflow-wrap:anywhere}.print-meta{margin-bottom:18px}}
+@media(max-width:650px){.shell{width:min(100% - 22px,1020px);margin-top:20px}.field-grid{grid-template-columns:1fr}.question-card{min-height:0}.nav{align-items:stretch}.nav-actions{width:100%}.nav-actions .btn{flex:1}.crossword{grid-template-columns:repeat(5,50px);grid-auto-rows:50px}.crossword .white{width:50px;height:50px}}
+</style>
 </head>
 <body>
-  <div class="topline" aria-hidden="true"></div>
-  <main class="shell">
-    <div class="brand"><span class="brand-mark" aria-hidden="true">CS</span> Applicant assessment</div>
-    <h1>Customer Support Assessment</h1>
-    <p class="muted">A practical assessment for phone-based customer support applicants.</p>
-
-    <section class="welcome card" id="welcome" aria-labelledby="welcomeTitle">
-      <div class="welcome-copy">
-        <h2 id="welcomeTitle">Before you begin</h2>
-        <p>This assessment includes customer scenarios, reasoning activities, word puzzles, and a typing transcription. Your answers should reflect how you would support a customer by phone.</p>
-        <div class="chips"><span class="chip">12 questions</span><span class="chip">25 minutes</span><span class="chip">English</span></div>
+<div class="topline" aria-hidden="true"></div>
+<main class="shell">
+  <div class="brand"><span class="brand-mark" aria-hidden="true">CS</span> Applicant assessment</div>
+  <h1>Aptitude Assessment - CS</h1>
+  <p class="muted">A practical assessment for phone-based customer support applicants.</p>
+  <section class="welcome card" id="welcome">
+    <h2>Before you begin</h2>
+    <p>This assessment uses customer call scenarios, communication challenges, word puzzles, transcription, and data activities. Answer each question to continue.</p>
+    <div class="chips"><span class="chip">20 questions</span><span class="chip">30 minutes</span><span class="chip">English</span></div>
+    <form id="candidateForm" novalidate>
+      <div class="field-grid">
+        <div class="field"><label for="candidateName">Full name</label><input id="candidateName" type="text" autocomplete="name" required maxlength="120" placeholder="Enter your name"></div>
+        <div class="field"><label for="candidateEmail">Email address</label><input id="candidateEmail" type="email" autocomplete="email" required maxlength="254" placeholder="name@example.com"></div>
       </div>
-      <form id="candidateForm" novalidate>
-        <div class="field-grid">
-          <div class="field"><label for="candidateName">Full name</label><input id="candidateName" name="candidateName" type="text" autocomplete="name" required maxlength="120" placeholder="Enter your name"></div>
-          <div class="field"><label for="candidateEmail">Email address</label><input id="candidateEmail" name="candidateEmail" type="email" autocomplete="email" required maxlength="254" placeholder="name@example.com"></div>
-        </div>
-        <div class="notice"><strong>Preview notice:</strong> This page does not send or save your name, email, or answers. A secure submission service must be connected before applicants use it. Question text selection and copying are disabled in the assessment view; screenshots and page-source access cannot be blocked by a browser-only page.</div>
-        <button class="btn btn-primary" type="submit">Start assessment</button>
-        <p class="small-note" id="formError" role="alert" style="margin-top:10px"></p>
-      </form>
-    </section>
-
-    <section class="assessment" id="assessment" aria-label="Assessment questions">
-      <div class="assessment-head"><span class="candidate-name" id="candidateGreeting"></span><span class="timer" id="timer" aria-live="off">25:00 remaining</span></div>
-      <div class="track" role="progressbar" aria-label="Assessment progress" aria-valuemin="0" aria-valuemax="12" aria-valuenow="1"><div class="fill" id="progressFill"></div></div>
-      <article class="question-card card" id="questionCard" tabindex="-1" aria-live="polite"></article>
-      <p class="validation-error" id="validationError" role="alert" aria-live="polite"></p>
-      <div class="nav"><span class="small-note" id="draftNote">Your responses remain in this browser tab only.</span><div class="nav-actions"><button class="btn btn-light" id="backButton" type="button">Back</button><button class="btn btn-accent" id="nextButton" type="button">Next question</button></div></div>
-    </section>
-
-    <section class="completion card" id="completion" tabindex="-1" aria-labelledby="completeTitle">
-      <h2 id="completeTitle">Assessment preview complete</h2>
-      <p>Thank you, <strong id="completeName"></strong>. This preview has not sent your applicant details or responses. You can print or save a PDF copy of your responses below. Connect a secure submission service before using the assessment for recruitment.</p>
-      <button class="btn btn-accent" id="pdfButton" type="button">Print / Save responses as PDF</button>
-      <button class="btn btn-light" id="reviewButton" type="button">Review responses</button>
-    </section>
-    <p class="foot">Customer Support Assessment · Applicant version</p>
-  </main>
-  <section id="printReport" class="print-report" aria-label="Assessment responses"></section>
-
-  <script>
-    // These prompts are demonstration content. A live assessment needs server-side storage and scoring.
-    const transcript = "This year, our customer support team is focused on resolving issues clearly, keeping customers informed, and recording accurate call notes. When you contact us about an order, please have the order number ready if it is available. If you do not have it, we can discuss other ways to locate the purchase. A representative may ask a few questions to understand the problem and review the information in your account. Before the call ends, we will summarise the steps taken and explain what will happen next. If we need more time, we will tell you when you can expect an update.";
-    const questions = [
-      { type: "text", section: "Issue resolution", title: "A customer needs help with a printer", prompt: "A caller needs help with a printer problem. Early in the call, you learn they are away from home and cannot check the printer’s model number or other details you usually need. How would you continue the call? Include what you could ask or try now and what you would arrange if you need more information later.", label: "Describe your approach", hint: "Consider useful questions, safe next steps, and an agreed follow-up." },
-      { type: "multi", section: "Interpersonal skills", title: "Helping a customer find information", prompt: "A caller is frustrated because product information on your website is lengthy and difficult to explain over the phone. Select all actions that would help the caller.", choices: ["Offer to guide the caller to the relevant page and help them find the needed section.", "Ask which details they need and offer to locate or send the relevant information, if available.", "Tell the caller to print all product information and read it later.", "Confirm whether a link or a short explanation would be more useful.", "Assume the caller cannot use the website and end the call." ] },
-      { type: "text", section: "Interpersonal skills", title: "Responding to a long-term customer", prompt: "A long-term customer says: “I’ve had this account problem twice now. I also gave feedback after the webinar last month, but I’m not sure anyone read it.” Write what you would say on the call. Address the account issue and acknowledge the feedback without promising an outcome you cannot confirm.", label: "Your response", hint: "Aim for a calm, concise response that addresses both points." },
-      { type: "text", section: "Issue resolution", title: "Handling a transfer request", prompt: "A caller wants to exchange shoes that do not fit. They say they would prefer to speak with a female representative about women’s footwear. You do not know whether one is available. What would you say and do next?", label: "Your response", hint: "Be respectful, avoid assumptions, and do not promise a transfer until you confirm availability." },
-      { type: "text", section: "Customer communication", title: "Apology and practical next step", prompt: "A caller says the violin strings they bought recently broke during their child’s school concert. The child was embarrassed, and the caller asks what your company can do to make it right. Write a brief response with an appropriate apology and next step. No refund or replacement policy is provided.", label: "Your response", hint: "Do not invent a compensation policy." },
-      { type: "typing", section: "Typing", title: "Transcription", prompt: "Start the recording and type the spoken words as accurately as you can. You can replay the sample. This demonstration uses the browser’s speech voice.", label: "Type the transcription", hint: "The audio script is included in this prototype’s source code; use a separate audio file and server-side delivery for a live assessment." },
-      { type: "numeric", section: "Numerical reasoning", title: "Support cases per representative", prompt: "Review the figures. Which year had the highest number of resolved cases per representative? Enter the year.", data: [{year:"2021",cases:0,reps:2},{year:"2022",cases:4,reps:2},{year:"2023",cases:5,reps:3},{year:"2024",cases:6,reps:4},{year:"2025",cases:7,reps:4}] },
-      { type: "text", section: "Verbal reasoning", title: "Summarise a call", prompt: "A customer says: “I ordered a desk lamp on Monday. It arrived today, but the switch does not work. I checked the wall outlet with another lamp, and that outlet works. I would like to know whether I can exchange it.” Summarise the issue and the customer’s requested next step in one or two sentences.", label: "Call summary", hint: "Keep the summary factual; do not add details the customer did not provide." },
-      { type: "rank", section: "Logical reasoning", title: "Prioritise the support queue", prompt: "Apply this priority rule: account security concern first, confirmed service outage affecting many customers second, individual service problem third, general billing question fourth. Use the up and down controls to arrange the cases.", items: [{id:"billing",text:"A caller wants an explanation of a charge on their bill."},{id:"individual",text:"One caller cannot use the service; no wider outage is known."},{id:"security",text:"A caller reports that an unknown person changed their account email."},{id:"outage",text:"Several customers cannot use the service because of a confirmed outage."}] },
-      { type: "jumble", section: "Word jumble", title: "Unscramble the support terms", prompt: "Rearrange the letters to make customer support words.", words: [{scramble:"THPMAEY",answer:"EMPATHY",clue:"Understanding a customer’s feelings"},{scramble:"NILSET",answer:"LISTEN",clue:"Pay close attention to what a caller says"},{scramble:"EVOSREL",answer:"RESOLVE",clue:"Find an answer to a customer’s problem"}] },
-      { type: "crossword", section: "Mini crossword", title: "Customer support crossword", prompt: "Fill the intersecting words using the clues. Enter one letter in each square.", clues: ["1 Across (4): Show concern and attention for another person.","2 Across (4): A phone connection used to speak with a caller.","3 Down (4): Capable of giving support or help."] },
-      { type: "order", section: "Put the steps in order", title: "Handling an account question", prompt: "Arrange these actions into a sensible order for handling a caller’s account question. Use the up and down controls.", items: [{id:"review",text:"Review the relevant account information."},{id:"understand",text:"Listen and clarify what the caller needs."},{id:"confirm",text:"Confirm the caller understands and agree on any next step."},{id:"verify",text:"Verify the caller before accessing account details."},{id:"explain",text:"Explain what you found in clear language."}] }
-    ];
-
-    const form = document.getElementById("candidateForm");
-    const welcome = document.getElementById("welcome");
-    const assessment = document.getElementById("assessment");
-    const completion = document.getElementById("completion");
-    const questionCard = document.getElementById("questionCard");
-    const answers = Array(questions.length).fill(null);
-    const interacted = Array(questions.length).fill(false);
-    let current = 0;
-    let secondsLeft = 25 * 60;
-    let timerId = null;
-    let candidate = { name: "", email: "" };
-
-    function esc(value) { return String(value).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch])); }
-    function recordAnswer() {
-      const q = questions[current];
-      if (q.type === "multi") answers[current] = [...questionCard.querySelectorAll("input[type=checkbox]:checked")].map(el => Number(el.value));
-      else if (q.type === "rank" || q.type === "order") answers[current] = [...questionCard.querySelectorAll(".rank-item")].map(el => el.dataset.id);
-      else if (q.type === "jumble") answers[current] = [...questionCard.querySelectorAll(".jumble-input")].map(el => el.value);
-      else if (q.type === "crossword") answers[current] = [...questionCard.querySelectorAll(".crossword input")].map(el => el.value.toUpperCase());
-      else { const field = questionCard.querySelector("textarea, input.answer-input"); answers[current] = field ? field.value : ""; }
-    }
-    function answerTextArea(label, placeholder="Write your response here…") { return `<label class="response-label" for="answerField">${esc(label)}</label><textarea id="answerField" placeholder="${esc(placeholder)}">${esc(typeof answers[current] === "string" ? answers[current] : "")}</textarea>`; }
-    function render() {
-      const q = questions[current];
-      document.getElementById("progressFill").style.width = `${((current+1)/questions.length)*100}%`;
-      const track = document.querySelector(".track"); track.setAttribute("aria-valuemax", String(questions.length)); track.setAttribute("aria-valuenow", String(current+1));
-      document.getElementById("backButton").disabled = current === 0;
-      document.getElementById("nextButton").textContent = current === questions.length-1 ? "Finish assessment" : "Next question";
-      let body = "";
-      if (q.type === "text") body = answerTextArea(q.label);
-      if (q.type === "multi") {
-        const selected = Array.isArray(answers[current]) ? answers[current] : [];
-        body = `<ul class="action-list">${q.choices.map((choice,i)=>`<li><label><input type="checkbox" value="${i}" ${selected.includes(i)?"checked":""}><span>${esc(choice)}</span></label></li>`).join("")}</ul><p class="small-note">Select every action you believe would help.</p>`;
-      }
-      if (q.type === "typing") body = `<div class="transcript-bar"><button class="btn btn-primary" id="playTranscript" type="button">▶ Play recording</button><button class="btn btn-light" id="stopTranscript" type="button">Stop</button><span class="small-note" id="audioStatus" aria-live="polite">Use speakers or headphones.</span></div>${answerTextArea(q.label,"Type what you hear…")}<p class="small-note">${esc(q.hint)}</p>`;
-      if (q.type === "numeric") {
-        const values = Array.isArray(answers[current]) ? answers[current] : [];
-        body = `<table class="chart-table"><caption class="small-note" style="text-align:left;padding:8px 0">Resolved cases (thousands) and support representatives</caption><thead><tr><th>Year</th><th>Cases</th><th>Representatives</th></tr></thead><tbody>${q.data.map(row=>`<tr><th scope="row">${row.year}</th><td><span class="bar" style="width:${row.cases*18}px" aria-hidden="true"></span>${row.cases}</td><td>${row.reps}</td></tr>`).join("")}</tbody></table><label class="response-label" for="answerField">Your answer</label><input class="answer-input" id="answerField" inputmode="numeric" placeholder="Enter a year" value="${esc(typeof answers[current] === "string" ? answers[current] : "")}"><p class="small-note">Compare cases per representative for each year.</p>`;
-      }
-      if (q.type === "rank" || q.type === "order") {
-        let ids = Array.isArray(answers[current]) ? answers[current] : q.items.map(x=>x.id);
-        const ordered = ids.map(id=>q.items.find(x=>x.id===id)).filter(Boolean);
-        body = `<ol class="rank-list">${ordered.map((item,i)=>`<li class="rank-item" data-id="${esc(item.id)}"><span class="rank-copy">${esc(item.text)}</span><span class="rank-tools"><button type="button" data-move="up" aria-label="Move item ${i+1} up" ${i===0?"disabled":""}>↑</button><button type="button" data-move="down" aria-label="Move item ${i+1} down" ${i===ordered.length-1?"disabled":""}>↓</button></span></li>`).join("")}</ol><p class="small-note">Use the arrows to change the order.</p>`;
-      }
-      if (q.type === "jumble") {
-        const values = Array.isArray(answers[current]) ? answers[current] : [];
-        body = `<div class="jumble-list">${q.words.map((word,i)=>`<div class="jumble-item"><span><span class="scrambled" aria-label="Scrambled letters ${word.scramble}">${word.scramble}</span><br><span class="small-note">${esc(word.clue)}</span></span><label><span class="response-label">Your word</span><input class="jumble-input" data-index="${i}" autocomplete="off" autocapitalize="characters" maxlength="${word.answer.length}" value="${esc(values[i]||"")}" placeholder="Type the word"></label></div>`).join("")}</div>`;
-      }
-      if (q.type === "crossword") {
-        const values = Array.isArray(answers[current]) ? answers[current] : [];
-        const cells = [0,1,2,3,null,null,4,null,null,null,null,5,6,7,8,null,9,null,null,null];
-        body = `<div class="crossword-wrap"><div class="crossword" role="group" aria-label="Crossword grid">${cells.map((cell,i)=>cell===null?'<span class="black" aria-hidden="true"></span>':`<input class="white" data-cell="${cell}" aria-label="Crossword letter ${cell+1}" maxlength="1" autocomplete="off" autocapitalize="characters" value="${esc(values[cell]||"")}">`).join("")}</div></div><div class="clues">${q.clues.map(c=>`<p>${esc(c)}</p>`).join("")}</div><p class="small-note">The words cross in the grid. Use Tab to move through the squares.</p>`;
-      }
-      questionCard.innerHTML = `<div class="question-kicker"><span class="section-tag">${esc(q.section)}</span><span class="q-number">Question ${current+1} of ${questions.length}</span></div><h2 data-protected>${esc(q.title)}</h2><p class="prompt" data-protected>${esc(q.prompt)}</p>${body}`;
-      questionCard.querySelectorAll(".rank-tools button").forEach(button=>button.addEventListener("click",()=>moveItem(button)));
-      if (q.type === "typing") {
-        document.getElementById("playTranscript").addEventListener("click",playAudio);
-        document.getElementById("stopTranscript").addEventListener("click",stopAudio);
-      }
-      if (q.type === "crossword") questionCard.querySelectorAll(".crossword input").forEach(input=>input.addEventListener("input",()=>{ input.value=input.value.slice(-1).toUpperCase(); recordAnswer(); }));
-      document.getElementById("validationError").textContent = "";
-    }
-    function moveItem(button) {
-      const li=button.closest(".rank-item"), list=li.parentElement;
-      if (button.dataset.move === "up" && li.previousElementSibling) list.insertBefore(li,li.previousElementSibling);
-      if (button.dataset.move === "down" && li.nextElementSibling) list.insertBefore(li.nextElementSibling,li);
-      interacted[current] = true;
-      recordAnswer();
-      [...list.children].forEach((item,i)=>item.querySelectorAll("button").forEach(b=>{b.disabled=(b.dataset.move==="up"&&i===0)||(b.dataset.move==="down"&&i===list.children.length-1);b.setAttribute("aria-label",`Move item ${i+1} ${b.dataset.move}`);}));
-    }
-    function playAudio() {
-      if (!("speechSynthesis" in window)) { document.getElementById("audioStatus").textContent="Speech playback is unavailable in this browser."; return; }
-      stopAudio(); const utterance=new SpeechSynthesisUtterance(transcript); utterance.rate=.9;
-      utterance.onstart=()=>{const status=document.getElementById("audioStatus");if(status)status.textContent="Recording is playing.";};
-      utterance.onend=()=>{const status=document.getElementById("audioStatus");if(status)status.textContent="Recording finished. You can replay it.";};
-      window.speechSynthesis.speak(utterance);
-    }
-    function stopAudio() { if ("speechSynthesis" in window) window.speechSynthesis.cancel(); const status=document.getElementById("audioStatus"); if(status)status.textContent="Recording stopped. You can replay it."; }
-    function updateTimer() {
-      const min=String(Math.floor(secondsLeft/60)).padStart(2,"0"), sec=String(secondsLeft%60).padStart(2,"0");
-      const el=document.getElementById("timer"); el.textContent=`${min}:${sec} remaining`; if(secondsLeft<=300)el.classList.add("low");
-      if(secondsLeft<=0){clearInterval(timerId);el.textContent="Time limit reached";finishAssessment(true);return;} secondsLeft--;
-    }
-    function hasAnswer() {
-      const q=questions[current], value=answers[current];
-      if(q.type==="multi") return Array.isArray(value)&&value.length>0;
-      if(q.type==="jumble"||q.type==="crossword") return Array.isArray(value)&&value.length>0&&value.every(item=>String(item).trim().length>0);
-      if(q.type==="rank"||q.type==="order") return interacted[current]&&Array.isArray(value)&&value.length===q.items.length;
-      return typeof value==="string"&&value.trim().length>0;
-    }
-    function answerForReport(index) {
-      const q=questions[index], value=answers[index];
-      if(value===null||value===undefined) return "Not answered before time expired.";
-      if(q.type==="multi") return value.length?value.map(i=>`• ${q.choices[i]}`).join("\n"):"No selections";
-      if(q.type==="rank"||q.type==="order") return value.map((id,i)=>`${i+1}. ${q.items.find(item=>item.id===id)?.text||id}`).join("\n");
-      if(q.type==="jumble") return q.words.map((word,i)=>`${word.clue}: ${value[i]||"(blank)"}`).join("\n");
-      if(q.type==="crossword") return `1 Across: ${(value[0]||"")+(value[1]||"")+(value[2]||"")+(value[3]||"")}\n2 Across: ${(value[5]||"")+(value[6]||"")+(value[7]||"")+(value[8]||"")}\n3 Down: ${(value[1]||"")+(value[4]||"")+(value[5]||"")+(value[9]||"")}`;
-      return String(value);
-    }
-    function prepareReport() {
-      const report=document.getElementById("printReport");
-      report.innerHTML=`<h1>Customer Support Assessment — Applicant Responses</h1><p class="print-meta"><strong>Name:</strong> ${esc(candidate.name)}<br><strong>Email:</strong> ${esc(candidate.email)}<br><strong>Completed:</strong> ${esc(new Date().toLocaleString())}</p>${questions.map((q,i)=>`<section class="print-question"><h2>Question ${i+1}: ${esc(q.title)}</h2><p><strong>${esc(q.section)}</strong> · ${esc(q.prompt)}</p><div class="print-answer"><strong>Response:</strong>\n${esc(answerForReport(i))}</div></section>`).join("")}`;
-    }
-    function finishAssessment(timedOut=false) {
-      recordAnswer(); stopAudio(); clearInterval(timerId);
-      assessment.classList.remove("active"); completion.classList.add("active");
-      document.getElementById("completeName").textContent=candidate.name;
-      if(timedOut) document.getElementById("completeTitle").textContent="Time is up";
-      prepareReport(); completion.focus(); completion.scrollIntoView({behavior:"smooth",block:"start"});
-    }
-    form.addEventListener("submit",event=>{
-      event.preventDefault(); const name=document.getElementById("candidateName"), email=document.getElementById("candidateEmail"), error=document.getElementById("formError");
-      if(!name.value.trim()||!email.validity.valid){error.textContent="Enter your name and a valid email address to continue.";(!name.value.trim()?name:email).focus();return;}
-      candidate={name:name.value.trim(),email:email.value.trim()}; error.textContent="";
-      document.getElementById("candidateGreeting").textContent=`Applicant: ${candidate.name}`; welcome.hidden=true; assessment.classList.add("active"); render(); updateTimer(); timerId=window.setInterval(updateTimer,1000); questionCard.focus();
-    });
-    document.getElementById("backButton").addEventListener("click",()=>{recordAnswer();stopAudio();if(current>0)current--;render();questionCard.focus();});
-    document.getElementById("nextButton").addEventListener("click",()=>{
-      recordAnswer();
-      if(!hasAnswer()){document.getElementById("validationError").textContent="Please answer this question before continuing.";const field=questionCard.querySelector("textarea, input.answer-input, input.jumble-input, .crossword input, input[type=checkbox]");if(field)field.focus();return;}
-      document.getElementById("validationError").textContent="";stopAudio();
-      if(current<questions.length-1){current++;render();questionCard.scrollIntoView({behavior:"smooth",block:"start"});questionCard.focus();}
-      else finishAssessment();
-    });
-    document.getElementById("reviewButton").addEventListener("click",()=>{completion.classList.remove("active");assessment.classList.add("active");current=0;render();questionCard.scrollIntoView({behavior:"smooth",block:"start"});questionCard.focus();});
-    document.getElementById("pdfButton").addEventListener("click",()=>{prepareReport();window.print();});
-    questionCard.addEventListener("contextmenu",event=>{if(event.target.closest("[data-protected]"))event.preventDefault();});
-    questionCard.addEventListener("copy",event=>{const selection=window.getSelection();if(selection&&selection.rangeCount&&questionCard.querySelector("[data-protected]")&&[...questionCard.querySelectorAll("[data-protected]")].some(el=>selection.containsNode(el,true)))event.preventDefault();});
-    document.addEventListener("copy",event=>{const selection=window.getSelection();if(selection&&selection.rangeCount&&[...document.querySelectorAll("[data-protected]")].some(el=>selection.containsNode(el,true)))event.preventDefault();});
-  </script>
+      <div class="notice"><strong>Assessment information:</strong> Your responses stay in this browser session and are included in the response report when you finish. The page uses a focus shield when it loses focus; browser-based pages cannot reliably block operating-system screenshots or erase a captured image.</div>
+      <button class="btn btn-primary" type="submit">Start assessment</button>
+      <p class="small-note" id="formError" role="alert"></p>
+    </form>
+  </section>
+  <section class="assessment" id="assessment" aria-label="Assessment questions">
+    <div class="assessment-head"><span class="candidate-name" id="candidateGreeting"></span><span class="timer" id="timer" aria-live="off">30:00 remaining</span></div>
+    <div class="track" role="progressbar" aria-label="Assessment progress" aria-valuemin="0" aria-valuemax="20" aria-valuenow="1"><div class="fill" id="progressFill"></div></div>
+    <article class="question-card card" id="questionCard" tabindex="-1" aria-live="polite"></article>
+    <p class="validation-error" id="validationError" role="alert" aria-live="polite"></p>
+    <div class="nav"><span class="small-note">Complete the current response to continue.</span><div class="nav-actions"><button class="btn btn-light" id="backButton" type="button">Back</button><button class="btn btn-accent" id="nextButton" type="button">Next question</button></div></div>
+  </section>
+  <section class="completion card" id="completion" hidden tabindex="-1">
+    <h2 id="completeTitle">Assessment complete</h2>
+    <p>Thank you, <strong id="completeName"></strong>. Your responses are ready to print or save as a PDF.</p>
+    <button class="btn btn-accent" id="pdfButton" type="button">Print / Save responses as PDF</button>
+    <button class="btn btn-light" id="reviewButton" type="button">Review responses</button>
+  </section>
+  <p class="foot">Aptitude Assessment - CS · Applicant version</p>
+</main>
+<section id="printReport" class="print-report" aria-label="Assessment response report"></section>
+<div class="focus-shield" id="focusShield" aria-hidden="true"><div class="focus-shield-card"><h2>Assessment paused</h2><p>Return to this assessment tab to continue.</p></div></div>
+<script>
+const questions = [
+{type:"mcq",section:"Communication skills",title:"Listen, reflect, clarify",prompt:"A caller says their new device stopped working and they are worried they have lost their saved information. What is the best first response?",choices:["“That sounds worrying. Let me make sure I understand what happened, then we can check the safest next step.”","“You should restart it; that fixes most problems.”","“I can’t help until you know the model number.”","“Don’t worry, nothing is lost.”"]},
+{type:"crossword",section:"Crossword challenge",title:"Build the support words",prompt:"Complete the intersecting words, then solve the bonus jumble.",clues:["1 Across (4): Show concern and attention for another person.","2 Across (4): A phone connection used to speak with a caller.","3 Down (4): Capable of giving support or help."],jumble:{scramble:"HTPMAEY",clue:"Understanding a caller’s feelings"}},
+{type:"typing",section:"Typing",title:"Call transcription",prompt:"Play the short call recording and type the words you hear. The recording is 30 words long.",audio:"Thanks for calling today. I’ve found your order and can see the parcel is delayed. I’m sorry for the inconvenience. I’ll check the latest update and explain what happens next."},
+{type:"summary",section:"Call summary",title:"Summarise the request",prompt:"A caller says their replacement was expected today, but tracking still shows it at the depot. They want to know when it will arrive and whether they need to do anything. Write a concise call note in no more than 30 words."},
+{type:"analytics",section:"Analytics",title:"Find the quickest resolution",prompt:"Review the team’s average resolution time. Which day had the fastest average?",table:[["Day","Average minutes"],["Monday","14"],["Tuesday","11"],["Wednesday","16"],["Thursday","9"]],choices:["Monday","Tuesday","Wednesday","Thursday"]},
+{type:"mcq",section:"Communication skills",title:"Acknowledge frustration",prompt:"A caller says, “I’ve explained this twice already and I still don’t have an answer.” What response is most helpful?",choices:["“I’m sorry you’ve had to repeat yourself. I’ll review the notes and confirm the issue before we continue.”","“There is no need to get upset.”","“You will have to explain it again because I wasn’t on the earlier call.”","“I’m sure the previous agent did their best.”"]},
+{type:"crossword",section:"Crossword challenge",title:"Customer care vocabulary",prompt:"Complete the intersecting words, then solve the bonus jumble.",clues:["1 Across (4): Show concern and attention for another person.","2 Across (4): A phone connection used to speak with a caller.","3 Down (4): Capable of giving support or help."],jumble:{scramble:"NILSET",clue:"Pay close attention to a caller"}},
+{type:"typing",section:"Typing",title:"Call transcription",prompt:"Play the short call recording and type the words you hear. The recording is 30 words long.",audio:"I understand you expected the replacement today. I’m checking the tracking details now. If the parcel has not moved, I’ll explain available options and agree a follow-up time together today."},
+{type:"summary",section:"Call summary",title:"Turn details into clear notes",prompt:"A caller received a desk lamp today. Its switch does not work. They tested the wall outlet with another lamp, which worked, and asked about an exchange. Summarise in at most 30 words."},
+{type:"analytics",section:"Analytics",title:"Prioritise the callback queue",prompt:"Use the company rule: security concerns first, a confirmed widespread outage second, individual service issues third, and general billing questions fourth. Arrange the cases in priority order.",order:[["billing","A caller asks about a charge on their bill."],["individual","One customer cannot access the service."],["security","A caller reports an unknown person changed their account email."],["outage","Several customers are affected by a confirmed outage."]]},
+{type:"mcq",section:"Communication skills",title:"Explain a hold clearly",prompt:"You need to check an account detail and expect the hold to take about two minutes. What should you say?",choices:["“May I place you on hold for about two minutes while I check this? I’ll return and update you.”","“Hold on.”","“This will only take a second,” even though it may take two minutes.","Place the caller on hold without asking."]},
+{type:"crossword",section:"Crossword challenge",title:"Words that build trust",prompt:"Complete the intersecting words, then solve the bonus jumble.",clues:["1 Across (4): Show concern and attention for another person.","2 Across (4): A phone connection used to speak with a caller.","3 Down (4): Capable of giving support or help."],jumble:{scramble:"EVOSREL",clue:"Find an answer to a problem"}},
+{type:"typing",section:"Typing",title:"Call transcription",prompt:"Play the short call recording and type the words you hear. The recording is 30 words long.",audio:"Before I access the account, I’ll verify a few details. Then I’ll review the charge, explain what I find in plain language, and make sure you know the next step."},
+{type:"summary",section:"Call summary",title:"Capture the essential facts",prompt:"A customer’s online order is marked delivered, but they cannot find the parcel. They checked the front door and asked a neighbour, and want help locating it. Write a factual note in 30 words or fewer."},
+{type:"analytics",section:"Analytics",title:"Compare customer feedback",prompt:"Which product area has the highest customer satisfaction score in this weekly snapshot?",table:[["Area","Score out of 5"],["Delivery updates","4.1"],["Returns","3.8"],["Phone support","4.6"],["Billing","4.0"]],choices:["Delivery updates","Returns","Phone support","Billing"]},
+{type:"mcq",section:"Communication skills",title:"Check for understanding",prompt:"You explained the steps to reset a password. What is the best way to make sure the caller is ready to continue?",choices:["Ask them to tell you which step they will try first, and invite any questions.","Ask, “You understand, right?” and move on.","Repeat the instructions more quickly.","Tell them to call again if they cannot do it."]},
+{type:"crossword",section:"Crossword challenge",title:"Final word puzzle",prompt:"Complete the intersecting words, then solve the bonus jumble.",clues:["1 Across (4): Show concern and attention for another person.","2 Across (4): A phone connection used to speak with a caller.","3 Down (4): Capable of giving support or help."],jumble:{scramble:"NOCATI",clue:"Information shared with another person"}},
+{type:"typing",section:"Typing",title:"Call transcription",prompt:"Play the short call recording and type the words you hear. The recording is 30 words long.",audio:"I’m sorry the product did not work as expected. I’ll ask a few questions, check the purchase details, and explain the options available under our support policy clearly and calmly."},
+{type:"summary",section:"Call summary",title:"Write a concise handover",prompt:"The caller is available after 3 p.m. They prefer a phone update, have not received the promised delivery message, and want confirmation that their address is correct. Summarise in 30 words or fewer."},
+{type:"analytics",section:"Analytics",title:"Choose the next best action",prompt:"A caller says their account email has changed without permission. Which action should be prioritised based on the support queue rules?",table:[["Case","Impact"],["Unrecognised email change","Possible account security issue"],["Password reset request","Single account"],["Invoice question","General billing"]],choices:["Explain the invoice first","Prioritise account security and follow verification steps","Ask the caller to wait a week","Change the email before verifying the caller"]}
+];
+const cells=[0,1,2,3,null,null,4,null,null,null,null,5,6,7,8,null,9,null,null,null];
+const form=document.getElementById("candidateForm"),welcome=document.getElementById("welcome"),assessment=document.getElementById("assessment"),completion=document.getElementById("completion"),card=document.getElementById("questionCard"),shield=document.getElementById("focusShield");
+const answers=Array(questions.length).fill(null),touched=Array(questions.length).fill(false);
+let current=0,secondsLeft=30*60,timerId=null,candidate={name:"",email:""},audioTimer=null,audioInterval=null,completed=false;
+function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function wordCount(s){return String(s||"").trim().split(/\s+/).filter(Boolean).length;}
+function save(){
+ const q=questions[current];
+ if(q.type==="mcq") {const x=card.querySelector("input[type=radio]:checked");answers[current]=x?Number(x.value):null;}
+ else if(q.type==="crossword") answers[current]={grid:[...card.querySelectorAll(".crossword input")].map(x=>x.value.toUpperCase()),jumble:card.querySelector("#jumbleAnswer")?.value||""};
+ else if(q.type==="typing"||q.type==="summary") answers[current]=card.querySelector("[data-answer]")?.value||"";
+ else if(q.type==="analytics"&&q.order) answers[current]=[...card.querySelectorAll(".rank-item")].map(x=>x.dataset.id);
+ else if(q.type==="analytics") {const x=card.querySelector("input[type=radio]:checked");answers[current]=x?Number(x.value):null;}
+}
+function radioChoices(q,selected,protectedOptions){
+ return '<ul class="action-list">'+q.choices.map((x,i)=>'<li><label><input type="radio" name="choice" value="'+i+'" '+(selected===i?"checked":"")+'><span data-protected>'+esc(x)+'</span></label></li>').join("")+'</ul>';
+}
+function render(){
+ const q=questions[current],old=answers[current];
+ document.getElementById("progressFill").style.width=((current+1)/questions.length*100)+"%";
+ const track=document.querySelector(".track");track.setAttribute("aria-valuemax",questions.length);track.setAttribute("aria-valuenow",current+1);
+ document.getElementById("backButton").disabled=current===0;
+ document.getElementById("nextButton").textContent=current===questions.length-1?"Finish assessment":"Next question";
+ let body="";
+ if(q.type==="mcq") body=radioChoices(q,old,false)+'<p class="small-note">Choose one response.</p>';
+ if(q.type==="crossword"){
+  const grid=old&&old.grid?old.grid:Array(10).fill("");
+  body='<div class="crossword-wrap"><div class="crossword" role="group" aria-label="Crossword grid">'+cells.map((x,i)=>x===null?'<span class="black" aria-hidden="true"></span>':'<input class="white" data-cell="'+x+'" data-answer aria-label="Crossword square '+(x+1)+'" maxlength="1" autocomplete="off" value="'+esc(grid[x]||"")+'">').join("")+'</div></div><div class="clues" data-protected>'+q.clues.map(x=>'<p>'+esc(x)+'</p>').join("")+'</div><div class="jumble-box"><strong>Bonus word jumble</strong><p><span class="scrambled" data-protected>'+esc(q.jumble.scramble)+'</span><span data-protected>'+esc(q.jumble.clue)+'</span></p><label class="response-label" for="jumbleAnswer">Unscramble the word</label><input class="jumble-input" id="jumbleAnswer" data-answer maxlength="12" autocomplete="off" value="'+esc(old&&old.jumble||"")+'" placeholder="Type the word"></div>';
+ }
+ if(q.type==="typing"){
+  body='<div class="audio-card"><div class="audio-controls"><button class="btn btn-primary" id="playAudio" type="button">▶ Play audio</button><button class="btn btn-light" id="stopAudio" type="button">Stop</button><span class="small-note" id="audioDuration">30 words · browser voice</span></div><div class="audio-track" role="progressbar" aria-label="Audio playback progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="audio-fill" id="audioFill"></div></div><div class="audio-status" id="audioStatus" aria-live="polite">Ready to play. Use speakers or headphones.</div></div><label class="response-label" for="answerField">Type what you hear</label><textarea id="answerField" data-answer placeholder="Type the spoken words here…" spellcheck="false">'+esc(old||"")+'</textarea><p class="small-note">The recording contains exactly 30 words. You may replay it.</p>';
+ }
+ if(q.type==="summary") body='<label class="response-label" for="answerField">Your call note · maximum 30 words</label><textarea id="answerField" data-answer maxlength="220" placeholder="Write a brief factual summary…">'+esc(old||"")+'</textarea><div class="word-count" id="wordCount">0 / 30 words</div>';
+ if(q.type==="analytics"&&!q.order){
+  body='<div class="table-wrap" data-protected><table class="data-table"><tbody>'+q.table.map((row,i)=>'<tr>'+row.map((cell,j)=>i===0?'<th scope="col">'+esc(cell)+'</th>':j===0?'<th scope="row">'+esc(cell)+'</th>':'<td>'+esc(cell)+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>'+radioChoices(q,old,false)+'<p class="small-note">Select the best answer from the data.</p>';
+ }
+ if(q.type==="analytics"&&q.order){
+  let ids=Array.isArray(old)?old:q.order.map(x=>x[0]);let ordered=ids.map(id=>q.order.find(x=>x[0]===id)).filter(Boolean);
+  body='<ol class="rank-list">'+ordered.map((x,i)=>'<li class="rank-item" data-id="'+x[0]+'"><span class="rank-copy" data-protected>'+esc(x[1])+'</span><span class="rank-tools"><button type="button" data-move="up" aria-label="Move row '+(i+1)+' up" '+(i===0?"disabled":"")+'>↑</button><button type="button" data-move="down" aria-label="Move row '+(i+1)+' down" '+(i===ordered.length-1?"disabled":"")+'>↓</button></span></li>').join("")+'</ol><p class="small-note">Arrange the cases from highest to lowest priority using the arrows.</p>';
+ }
+ card.innerHTML='<div class="question-kicker"><span class="tag">'+esc(q.section)+'</span><span class="q-number">Question '+(current+1)+' of '+questions.length+'</span></div><h2 data-protected>'+esc(q.title)+'</h2><p class="prompt" data-protected>'+esc(q.prompt)+'</p>'+body;
+ card.querySelectorAll(".rank-tools button").forEach(b=>b.addEventListener("click",moveItem));
+ card.querySelectorAll(".crossword input").forEach(x=>x.addEventListener("input",()=>{x.value=x.value.slice(-1).toUpperCase();save();}));
+ if(q.type==="typing"){document.getElementById("playAudio").addEventListener("click",playAudio);document.getElementById("stopAudio").addEventListener("click",stopAudio);}
+ if(q.type==="summary"){const f=card.querySelector("[data-answer]");f.addEventListener("input",()=>{document.getElementById("wordCount").textContent=wordCount(f.value)+" / 30 words";});document.getElementById("wordCount").textContent=wordCount(f.value)+" / 30 words";}
+ document.getElementById("validationError").textContent="";
+}
+function moveItem(e){
+ const li=e.currentTarget.closest(".rank-item"),list=li.parentElement;
+ if(e.currentTarget.dataset.move==="up"&&li.previousElementSibling)list.insertBefore(li,li.previousElementSibling);
+ if(e.currentTarget.dataset.move==="down"&&li.nextElementSibling)list.insertBefore(li.nextElementSibling,li);
+ touched[current]=true;save();
+ [...list.children].forEach((x,i)=>x.querySelectorAll("button").forEach(b=>{b.disabled=(b.dataset.move==="up"&&i===0)||(b.dataset.move==="down"&&i===list.children.length-1);}));
+}
+function chooseVoice(){
+ const voices=window.speechSynthesis.getVoices();
+ return voices.find(v=>/^en/i.test(v.lang)&&/natural|neural|online|premium/i.test(v.name))||voices.find(v=>/^en/i.test(v.lang))||null;
+}
+function playAudio(){
+ if(!("speechSynthesis" in window)){document.getElementById("audioStatus").textContent="Audio playback is unavailable in this browser.";return;}
+ stopAudio();const q=questions[current],u=new SpeechSynthesisUtterance(q.audio);u.rate=.94;u.pitch=1.02;const voice=chooseVoice();if(voice)u.voice=voice;
+ const status=document.getElementById("audioStatus"),bar=document.getElementById("audioFill"),track=document.querySelector(".audio-track");
+ let elapsed=0;const duration=Math.max(8000,wordCount(q.audio)*450);
+ u.onstart=()=>{status.textContent=voice?"Playing with "+voice.name+".":"Playing with the available English voice.";};
+ u.onend=()=>{clearInterval(audioInterval);bar.style.width="100%";track.setAttribute("aria-valuenow","100");status.textContent="Audio finished. You can replay it.";};
+ u.onerror=()=>{clearInterval(audioInterval);status.textContent="Audio could not be played. Try another browser voice or device.";};
+ audioInterval=setInterval(()=>{elapsed+=250;const pct=Math.min(95,Math.round(elapsed/duration*100));bar.style.width=pct+"%";track.setAttribute("aria-valuenow",String(pct));},250);
+ window.speechSynthesis.speak(u);
+}
+function stopAudio(){
+ if("speechSynthesis" in window)window.speechSynthesis.cancel();
+ clearInterval(audioInterval);audioInterval=null;
+ const bar=document.getElementById("audioFill"),track=document.querySelector(".audio-track"),status=document.getElementById("audioStatus");
+ if(bar)bar.style.width="0%";if(track)track.setAttribute("aria-valuenow","0");if(status)status.textContent="Audio stopped. You can replay it.";
+}
+function isAnswered(){
+ const q=questions[current],v=answers[current];
+ if(q.type==="mcq"||q.type==="analytics"&&!q.order)return Number.isInteger(v);
+ if(q.type==="crossword")return !!(v&&v.grid&&v.grid.every(x=>x.trim())&&v.jumble.trim());
+ if(q.type==="typing")return typeof v==="string"&&wordCount(v)>=5;
+ if(q.type==="summary")return typeof v==="string"&&wordCount(v)>=4&&wordCount(v)<=30;
+ if(q.type==="analytics"&&q.order)return touched[current]&&Array.isArray(v)&&v.length===q.order.length;
+ return false;
+}
+function timeTick(){
+ const el=document.getElementById("timer"),mm=String(Math.floor(secondsLeft/60)).padStart(2,"0"),ss=String(secondsLeft%60).padStart(2,"0");
+ el.textContent=mm+":"+ss+" remaining";if(secondsLeft<=300)el.classList.add("low");
+ if(secondsLeft<=0){clearInterval(timerId);finish(true);return;}secondsLeft--;
+}
+function answerText(i){
+ const q=questions[i],v=answers[i];
+ if(v===null||v===undefined)return "Not answered before time expired.";
+ if(q.type==="mcq"||q.type==="analytics"&&!q.order)return q.choices[v]||"";
+ if(q.type==="crossword"){
+  const g=v.grid;return "1 Across: "+g[0]+g[1]+g[2]+g[3]+"\n2 Across: "+g[5]+g[6]+g[7]+g[8]+"\n3 Down: "+g[1]+g[4]+g[5]+g[9]+"\nBonus jumble: "+v.jumble;
+ }
+ if(q.type==="analytics"&&q.order)return v.map((id,n)=>{const row=q.order.find(x=>x[0]===id);return (n+1)+". "+(row?row[1]:id);}).join("\n");
+ return String(v);
+}
+function makeReport(){
+ const report=document.getElementById("printReport");
+ report.innerHTML="<h1>Aptitude Assessment - CS — Applicant Responses</h1><p class=\"print-meta\"><strong>Name:</strong> "+esc(candidate.name)+"<br><strong>Email:</strong> "+esc(candidate.email)+"<br><strong>Completed:</strong> "+esc(new Date().toLocaleString())+"</p>"+questions.map((q,i)=>'<section class="print-question"><h2>Question '+(i+1)+": "+esc(q.title)+'</h2><p><strong>'+esc(q.section)+'</strong> · '+esc(q.prompt)+'</p><div class="print-answer"><strong>Response:</strong><br>'+esc(answerText(i))+'</div></section>').join("");
+}
+function finish(timeout){
+ if(completed)return;save();completed=true;stopAudio();clearInterval(timerId);assessment.classList.remove("active");completion.hidden=false;document.getElementById("completeName").textContent=candidate.name;
+ if(timeout)document.getElementById("completeTitle").textContent="Time is up";
+ makeReport();completion.focus();completion.scrollIntoView({behavior:"smooth",block:"start"});
+}
+form.addEventListener("submit",e=>{
+ e.preventDefault();const name=document.getElementById("candidateName"),email=document.getElementById("candidateEmail"),err=document.getElementById("formError");
+ if(!name.value.trim()||!email.validity.valid){err.textContent="Enter your name and a valid email address to continue.";(!name.value.trim()?name:email).focus();return;}
+ candidate={name:name.value.trim(),email:email.value.trim()};document.getElementById("candidateGreeting").textContent="Applicant: "+candidate.name;welcome.hidden=true;assessment.classList.add("active");render();timeTick();timerId=setInterval(timeTick,1000);card.focus();
+});
+document.getElementById("backButton").addEventListener("click",()=>{save();stopAudio();if(current>0)current--;render();card.focus();});
+document.getElementById("nextButton").addEventListener("click",()=>{
+ save();if(!isAnswered()){document.getElementById("validationError").textContent=current===3||current===8||current===13||current===18?"Write a concise summary of 4–30 words before continuing.":"Please complete this question before continuing.";const f=card.querySelector("textarea,input:not([type=radio]),input[type=radio]");if(f)f.focus();return;}
+ document.getElementById("validationError").textContent="";stopAudio();if(current<questions.length-1){current++;render();card.scrollIntoView({behavior:"smooth",block:"start"});card.focus();}else finish(false);
+});
+document.getElementById("reviewButton").addEventListener("click",()=>{completed=false;completion.hidden=true;assessment.classList.add("active");current=0;render();card.scrollIntoView({behavior:"smooth",block:"start"});card.focus();});
+document.getElementById("pdfButton").addEventListener("click",()=>{makeReport();window.print();});
+card.addEventListener("input",e=>{if(e.target.matches("[data-answer]")&&!e.target.classList.contains("white"))save();});
+card.addEventListener("change",save);
+card.addEventListener("paste",e=>{if(e.target.matches("[data-answer]"))e.preventDefault();});
+card.addEventListener("drop",e=>{if(e.target.matches("[data-answer]"))e.preventDefault();});
+card.addEventListener("contextmenu",e=>{if(e.target.closest("[data-protected]"))e.preventDefault();});
+document.addEventListener("copy",e=>{if(assessment.classList.contains("active"))e.preventDefault();});
+function setShield(active){if(!assessment.classList.contains("active")||completed)return;shield.classList.toggle("active",active);shield.setAttribute("aria-hidden",String(!active));}
+window.addEventListener("blur",()=>setShield(true));window.addEventListener("focus",()=>{if(document.visibilityState==="visible")setShield(false);});
+document.addEventListener("visibilitychange",()=>setShield(document.visibilityState!=="visible"));
+</script>
 </body>
 </html>
-
